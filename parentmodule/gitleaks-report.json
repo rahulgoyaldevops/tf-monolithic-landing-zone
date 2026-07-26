@@ -1,0 +1,50 @@
+[
+ {
+  "RuleID": "hardcoded-password",
+  "Description": "Detect hardcoded passwords",
+  "StartLine": 87,
+  "EndLine": 87,
+  "StartColumn": 12,
+  "EndColumn": 45,
+  "Match": "password        = \"Azureadmin@123\"",
+  "Secret": "password",
+  "File": "terraform.tfvars",
+  "SymlinkFile": "",
+  "Commit": "",
+  "Entropy": 2.75,
+  "Author": "",
+  "Email": "",
+  "Date": "",
+  "Message": "",
+  "Tags": [
+   "password",
+   "custom",
+   "security"
+  ],
+  "Fingerprint": "terraform.tfvars:hardcoded-password:87"
+ },
+ {
+  "RuleID": "hardcoded-password",
+  "Description": "Detect hardcoded passwords",
+  "StartLine": 103,
+  "EndLine": 103,
+  "StartColumn": 14,
+  "EndColumn": 47,
+  "Match": "password        = \"Azureadmin@123\"",
+  "Secret": "password",
+  "File": "terraform.tfvars",
+  "SymlinkFile": "",
+  "Commit": "",
+  "Entropy": 2.75,
+  "Author": "",
+  "Email": "",
+  "Date": "",
+  "Message": "",
+  "Tags": [
+   "password",
+   "custom",
+   "security"
+  ],
+  "Fingerprint": "terraform.tfvars:hardcoded-password:103"
+ }
+]
