@@ -13,7 +13,10 @@ resource "azurerm_network_interface" "nics" {
     name                          = "internal"
     subnet_id                     = data.azurerm_subnet.subnet[each.key].id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = data.azurerm_public_ip.pip[each.key].id
+    
+    # Enterprise Zero-Trust Rule: In production, VMs NEVER have Public IPs directly attached.
+    # Outbound egress routes via Azure Firewall/NAT Gateway; Inbound routes via Application Gateway/Bastion.
+    public_ip_address_id          = lookup(each.value, "pip_name", null) != null && lookup(each.value, "pip_name", null) != "" ? data.azurerm_public_ip.pip[each.key].id : null
   }
 }
 
