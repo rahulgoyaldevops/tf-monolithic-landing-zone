@@ -1,5 +1,5 @@
 # ============================================================================
-# Enterprise Landing Zone Architecture Outputs
+# Enterprise Landing Zone Engineering Outputs
 # ============================================================================
 
 output "landing_zone_summary" {
