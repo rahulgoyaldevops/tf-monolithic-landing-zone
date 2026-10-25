@@ -13,7 +13,7 @@ locals {
     {
       Environment       = upper(var.environment)
       ManagedBy         = "Terraform"
-      EngineeringLead   = "Rahul Goyal"
+      TechnicalOwner   = "Rahul Goyal (Senior DevOps Engineer)"
       CostCenter        = var.cost_center
       DataSensitivity   = var.data_sensitivity
       ProvisionedDate   = formatdate("YYYY-MM-DD", timestamp())
