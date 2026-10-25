@@ -1,3 +1,8 @@
+﻿# ============================================================================
+# Enterprise Landing Zone Root Orchestrator
+# Author: Rahul Goyal (14+ Years Total IT | Senior DevOps Engineer)
+# ============================================================================
+
 module "azurerm_resource_group" {
   source = "../child module/resource_group"
   rgs    = var.rgs
@@ -21,10 +26,10 @@ module "azurerm_public_ip" {
   pip        = var.pip
 }
 
-# NAYA combined module — NIC + VM dono isi ke andar ban rahe hain
+# Core Workload Virtual Machine & Associated NIC provisioning
 module "azurerm_linux_virtual_machine" {
-  depends_on       = [module.azurerm_subnet, module.azurerm_public_ip]
-  source           = "../child module/azurerm_linux_virtual_machine"
-  virtual_machines = var.virtual_machines
+  depends_on        = [module.azurerm_subnet, module.azurerm_public_ip]
+  source            = "../child module/azurerm_linux_virtual_machine"
+  virtual_machines  = var.virtual_machines
   vm_admin_password = data.azurerm_key_vault_secret.vm_password.value
 }
