@@ -1,6 +1,6 @@
 # ============================================================================
 # Enterprise Naming Conventions, Resource Tagging & Architecture Locals
-# Designed by: Rahul Goyal (14+ Years Enterprise Cloud & DevOps)
+# Designed by: Rahul Goyal (14+ Years Senior DevOps & Cloud Engineering)
 # ============================================================================
 
 locals {
@@ -13,7 +13,7 @@ locals {
     {
       Environment       = upper(var.environment)
       ManagedBy         = "Terraform"
-      ArchitectureOwner = "Rahul Goyal"
+      EngineeringLead   = "Rahul Goyal"
       CostCenter        = var.cost_center
       DataSensitivity   = var.data_sensitivity
       ProvisionedDate   = formatdate("YYYY-MM-DD", timestamp())
