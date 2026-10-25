@@ -1,7 +1,7 @@
 # 🏛️ Azure Landing Zone — Enterprise Architectural Deep Dive
 
-> **Authored by:** Rahul Goyal — 14+ Years Enterprise Cloud & Platform Engineering  
-> **Target Audience:** Enterprise Architects, Cloud Security Officers, Lead DevOps Engineers
+> **Authored by:** Rahul Goyal — 14+ Years Senior DevOps & Cloud Engineering  
+> **Target Audience:** Lead Cloud Engineers, DevOps Specialists, Lead DevOps Engineers
 
 ---
 
