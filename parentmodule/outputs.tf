@@ -9,6 +9,8 @@ output "landing_zone_summary" {
     resource_group_id  = module.azurerm_resource_group.rg_ids
     virtual_network_id = module.azurerm_virtual_network.vnet_ids
     subnets            = module.azurerm_subnet.subnet_ids
+    nsg_ids            = module.azurerm_network_security_group.nsg_ids
+    route_table_ids    = module.azurerm_route_table.route_table_ids
     public_ips         = module.azurerm_public_ip.pip_ids
     governance_tags    = local.mandatory_tags
   }

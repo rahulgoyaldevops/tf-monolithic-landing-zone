@@ -1,4 +1,4 @@
-﻿# ============================================================================
+# ============================================================================
 # Enterprise Landing Zone Root Orchestrator
 # Author: Rahul Goyal (14+ Years Total IT | Senior DevOps Engineer)
 # ============================================================================
@@ -20,6 +20,28 @@ module "azurerm_subnet" {
   subnet     = var.subnet
 }
 
+# Network Security Groups & Subnet Associations
+module "azurerm_network_security_group" {
+  depends_on = [module.azurerm_subnet]
+  source     = "../child module/network_security_group"
+  nsgs = {
+    for k, v in var.nsgs : k => merge(v, {
+      subnet_id = lookup(v, "subnet_key", null) != null ? lookup(module.azurerm_subnet.subnet_ids, v.subnet_key, null) : lookup(v, "subnet_id", null)
+    })
+  }
+}
+
+# Route Tables (UDR) & Subnet Associations (Zero-Trust Forced Tunneling)
+module "azurerm_route_table" {
+  depends_on = [module.azurerm_subnet]
+  source     = "../child module/route_table"
+  route_tables = {
+    for k, v in var.route_tables : k => merge(v, {
+      subnet_id = lookup(v, "subnet_key", null) != null ? lookup(module.azurerm_subnet.subnet_ids, v.subnet_key, null) : lookup(v, "subnet_id", null)
+    })
+  }
+}
+
 module "azurerm_public_ip" {
   depends_on = [module.azurerm_resource_group]
   source     = "../child module/pip"
@@ -28,7 +50,7 @@ module "azurerm_public_ip" {
 
 # Core Workload Virtual Machine & Associated NIC provisioning
 module "azurerm_linux_virtual_machine" {
-  depends_on        = [module.azurerm_subnet, module.azurerm_public_ip]
+  depends_on        = [module.azurerm_subnet, module.azurerm_public_ip, module.azurerm_network_security_group, module.azurerm_route_table]
   source            = "../child module/azurerm_linux_virtual_machine"
   virtual_machines  = var.virtual_machines
   vm_admin_password = data.azurerm_key_vault_secret.vm_password.value

@@ -1,4 +1,4 @@
-﻿variable "virtual_machines" {
+variable "virtual_machines" {
   type = map(any)
 }
 
@@ -8,10 +8,10 @@ variable "vm_admin_password" {
 }
 
 resource "azurerm_network_interface" "nics" {
-  for_each                      = var.virtual_machines
-  name                          = lookup(each.value, "nic_name", "${lookup(each.value, "name", lookup(each.value, "vm_name", each.key))}-nic")
-  location                      = each.value.location
-  resource_group_name           = lookup(each.value, "resource_group_name", lookup(each.value, "rg_name", null))
+  for_each                       = var.virtual_machines
+  name                           = lookup(each.value, "nic_name", "${lookup(each.value, "name", lookup(each.value, "vm_name", each.key))}-nic")
+  location                       = each.value.location
+  resource_group_name            = lookup(each.value, "resource_group_name", lookup(each.value, "rg_name", null))
   accelerated_networking_enabled = lookup(each.value, "accelerated_networking_enabled", lookup(each.value, "enable_accelerated_networking", true))
 
   ip_configuration {
@@ -21,7 +21,7 @@ resource "azurerm_network_interface" "nics" {
 
     # Enterprise Zero-Trust Rule: In production, VMs NEVER have Public IPs directly attached.
     # Outbound egress routes via Azure Firewall/NAT Gateway; Inbound routes via Application Gateway/Bastion.
-    public_ip_address_id          = lookup(each.value, "pip_name", null) != null && lookup(each.value, "pip_name", null) != "" ? data.azurerm_public_ip.pip[each.key].id : null
+    public_ip_address_id = lookup(each.value, "pip_name", null) != null && lookup(each.value, "pip_name", null) != "" ? data.azurerm_public_ip.pip[each.key].id : null
   }
 }
 
@@ -29,6 +29,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
   for_each                        = var.virtual_machines
   name                            = lookup(each.value, "name", lookup(each.value, "vm_name", each.key))
   location                        = each.value.location
+  zone                            = lookup(each.value, "zone", "1")
   resource_group_name             = lookup(each.value, "resource_group_name", lookup(each.value, "rg_name", null))
   network_interface_ids           = [azurerm_network_interface.nics[each.key].id]
   size                            = lookup(each.value, "size", lookup(each.value, "vm_size", "Standard_D4s_v5"))

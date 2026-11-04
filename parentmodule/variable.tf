@@ -1,4 +1,4 @@
-﻿# ============================================================================
+# ============================================================================
 # Input Variable Definitions with Enterprise Type Constraints & Defaults
 # ============================================================================
 
@@ -85,4 +85,16 @@ variable "pip" {
 variable "virtual_machines" {
   type        = map(any)
   description = "Map of enterprise Linux virtual machine workloads"
+}
+
+variable "nsgs" {
+  type        = map(any)
+  description = "Map of Network Security Groups with rules and subnet associations"
+  default     = {}
+}
+
+variable "route_tables" {
+  type        = map(any)
+  description = "Map of Route Tables with UDR routes and subnet associations"
+  default     = {}
 }

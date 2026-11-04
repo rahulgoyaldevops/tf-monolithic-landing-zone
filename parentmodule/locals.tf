@@ -11,13 +11,13 @@ locals {
   mandatory_tags = merge(
     var.custom_tags,
     {
-      Environment       = upper(var.environment)
-      ManagedBy         = "Terraform"
-      TechnicalOwner   = "Rahul Goyal (Senior DevOps Engineer)"
-      CostCenter        = var.cost_center
-      DataSensitivity   = var.data_sensitivity
-      ProvisionedDate   = formatdate("YYYY-MM-DD", timestamp())
-      ComplianceScope   = "CIS-Azure-v2.0"
+      Environment     = upper(var.environment)
+      ManagedBy       = "Terraform"
+      TechnicalOwner  = "Rahul Goyal (Senior DevOps Engineer)"
+      CostCenter      = var.cost_center
+      DataSensitivity = var.data_sensitivity
+      ProvisionedDate = formatdate("YYYY-MM-DD", timestamp())
+      ComplianceScope = "CIS-Azure-v2.0"
     }
   )
 

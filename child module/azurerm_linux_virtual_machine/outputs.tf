@@ -1,4 +1,4 @@
-﻿output "vm_ids" {
+output "vm_ids" {
   description = "Map of virtual machines to their resource IDs"
   value       = { for k, v in azurerm_linux_virtual_machine.vm : k => v.id }
 }

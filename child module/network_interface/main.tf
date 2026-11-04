@@ -1,4 +1,4 @@
-﻿variable "nic" {
+variable "nic" {
   type = map(any)
 }
 
@@ -16,10 +16,10 @@ data "azurerm_public_ip" "pip" {
 }
 
 resource "azurerm_network_interface" "nic" {
-  for_each                      = var.nic
-  name                          = each.value.name
-  location                      = each.value.location
-  resource_group_name           = lookup(each.value, "resource_group_name", lookup(each.value, "rg_name", null))
+  for_each                       = var.nic
+  name                           = each.value.name
+  location                       = each.value.location
+  resource_group_name            = lookup(each.value, "resource_group_name", lookup(each.value, "rg_name", null))
   accelerated_networking_enabled = lookup(each.value, "accelerated_networking_enabled", lookup(each.value, "enable_accelerated_networking", false))
 
   ip_configuration {

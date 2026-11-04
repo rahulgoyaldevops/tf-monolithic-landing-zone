@@ -1,4 +1,4 @@
-﻿variable "subnet" {
+variable "subnet" {
   type = map(any)
 }
 
