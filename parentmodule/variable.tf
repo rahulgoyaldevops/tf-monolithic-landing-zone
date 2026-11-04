@@ -98,3 +98,20 @@ variable "route_tables" {
   description = "Map of Route Tables with UDR routes and subnet associations"
   default     = {}
 }
+variable "deploy_management_groups" {
+  type        = bool
+  description = "Flag to enable provision of the Microsoft CAF Enterprise-Scale Management Group hierarchy"
+  default     = false
+}
+
+variable "mg_root_id" {
+  type        = string
+  description = "Root ID for the intermediate enterprise management group"
+  default     = "mg-enterprise"
+}
+
+variable "mg_root_display_name" {
+  type        = string
+  description = "Display name for the intermediate enterprise management group"
+  default     = "Enterprise Root"
+}

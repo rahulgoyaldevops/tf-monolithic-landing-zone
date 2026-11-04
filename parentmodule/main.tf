@@ -3,6 +3,14 @@
 # Author: Rahul Goyal (14+ Years Total IT | Senior DevOps Engineer)
 # ============================================================================
 
+# Optional Enterprise CAF Management Group Hierarchy
+module "azurerm_management_group_hierarchy" {
+  count             = var.deploy_management_groups ? 1 : 0
+  source            = "../child module/management_group"
+  root_id           = var.mg_root_id
+  root_display_name = var.mg_root_display_name
+}
+
 module "azurerm_resource_group" {
   source = "../child module/resource_group"
   rgs    = var.rgs

@@ -15,25 +15,30 @@
 ## 📐 Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                     PARENT MODULE                            │
-│                                                              │
-│  ┌──────────────┐   ┌──────────────┐   ┌──────────────┐     │
-│  │  Resource     │   │  Virtual     │   │   Subnet     │     │
-│  │  Group        │──▶│  Network     │──▶│              │     │
-│  │  Module       │   │  Module      │   │  Module      │     │
-│  └──────────────┘   └──────────────┘   └──────┬───────┘     │
-│                                                │             │
-│  ┌──────────────┐   ┌──────────────┐   ┌──────┴───────┐     │
-│  │  Route Table │   │  NSG Module  │   │  Linux VM    │     │
-│  │  (UDR 0.0.0.0│   │  (CIS 4096   │──▶│  + NIC Module│     │
-│  │   -> 10.100) │   │   Deny All)  │   │  (AZ-pinned) │     │
-│  └──────────────┘   └──────────────┘   └──────────────┘     │
-│                                                              │
-│  🔐 Secrets from Azure Key Vault (VM admin password)        │
-│  📦 Variable-driven: define infra in tfvars, not code       │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────┐
+│                          PARENT MODULE                                  │
+│                                                                         │
+│  ┌───────────────────────┐                                              │
+│  │  CAF Management Group │                                              │
+│  │  Hierarchy Module     │ (Platform, Corp, Online, Sandboxes, Decomm)  │
+│  └───────────────────────┘                                              │
+│                                                                         │
+│  ┌──────────────┐   ┌──────────────┐   ┌──────────────┐                 │
+│  │  Resource     │   │  Virtual     │   │   Subnet     │                 │
+│  │  Group        │──▶│  Network     │──▶│              │                 │
+│  │  Module       │   │  Module      │   │  Module      │                 │
+│  └──────────────┘   └──────────────┘   └──────┬───────┘                 │
+│                                                │                         │
+│  ┌──────────────┐   ┌──────────────┐   ┌──────┴───────┐                 │
+│  │  Route Table │   │  NSG Module  │   │  Linux VM    │                 │
+│  │  (UDR 0.0.0.0│   │  (CIS 4096   │──▶│  + NIC Module│                 │
+│  │   -> 10.100) │   │   Deny All)  │   │  (AZ-pinned) │                 │
+│  └──────────────┘   └──────────────┘   └──────────────┘                 │
+│                                                                         │
+│  🔐 Secrets from Azure Key Vault (VM admin password)                    │
+│  📦 Variable-driven: define infra in tfvars, not code                   │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
 ```
 
 ## 🧩 Module Structure
@@ -45,12 +50,13 @@ tf-monolithic-landing-zone/
 │   ├── variable.tf                # Input variables for all resources
 │   ├── data.tf                    # Key Vault secret lookups
 │   ├── provider.tf                # AzureRM provider config (v4.x)
-│   ├── outputs.tf                 # Subnets, NSGs, and Route Table IDs
-│   ├── ARCHITECTURE_DEEP_DIVE.md  # CAF Topology, Management Groups & BCDR
+│   ├── outputs.tf                 # Subnets, NSGs, Route Tables & MG IDs
+│   ├── ARCHITECTURE_DEEP_DIVE.md  # Microsoft CAF Enterprise-Scale Guide
 │   ├── .gitleaks.toml             # Secret scanning config
 │   └── infracost.json             # Cost estimation output
 │
 └── child module/
+    ├── management_group/           # CAF Management Groups (Platform, Corp, Online, Sandboxes)
     ├── resource_group/             # Azure Resource Group
     ├── virtual_network/            # VNet with configurable CIDR
     ├── subnet/                     # Subnet with delegation support
@@ -61,10 +67,27 @@ tf-monolithic-landing-zone/
     └── azurerm_linux_virtual_machine/ # Linux VM with Availability Zone pinning
 ```
 
+## 🏛️ Microsoft Cloud Adoption Framework (CAF) Hierarchy
+
+```
+                                Tenant Root Group (/)
+                                          │
+                          Intermediate Root Management Group
+                          (mg-enterprise / "Enterprise Root")
+                                          │
+    ┌───────────────────────┬─────────────┴─────────────┬────────────────────────┐
+    ▼                       ▼                           ▼                        ▼
+[Platform]            [Landing Zones]              [Sandboxes]            [Decommissioned]
+(Management,          (Corp LZ,                    (Isolated R&D,         (Quarantine,
+ Connectivity,        Online LZ)                   Zero Corp Peering)      Zero Resource Spends)
+ Identity)
+```
+
 ## 🚀 Key Design Decisions
 
 | Decision | Rationale |
 |:--|:--|
+| **Microsoft CAF Compliance** | Management Group structure strictly separates Platform services from Corp/Online Workloads and Sandboxes |
 | **Parent/Child Module Pattern** | Enforces separation of concerns — each resource type is independently versionable and testable |
 | **User Defined Routing (UDR)** | Spoke subnets enforce `0.0.0.0/0` next-hop to Hub Azure Firewall (`10.100.1.4`) for zero-trust inspection |
 | **Granular NSG Rules** | Subnets enforce explicit ingress allow lists and CIS-compliant priority 4096 Default Deny |
@@ -93,6 +116,7 @@ terraform plan -var-file="environments/prod.tfvars"
 
 ## 🔐 Security Best Practices
 
+- ✅ Microsoft CAF Enterprise-Scale hierarchy with policy boundaries
 - ✅ Zero hardcoded secrets — Key Vault lookups via `data` blocks
 - ✅ Pinned Availability Zones (`zone = "1"`)
 - ✅ Network microsegmentation with subnet-level NSG bindings
@@ -105,6 +129,6 @@ terraform plan -var-file="environments/prod.tfvars"
 
 <div align="center">
 
-**Built by [Rahul Goyal](https://github.com/rahulgoyaldevops)** — Senior DevOps & Cloud Engineer | 14+ Years Enterprise IT Background
+**Built by [Rahul Goyal](https://github.com/rahulgoyaldevops)** — Senior Azure DevOps Engineer | 14+ Years Enterprise IT Background
 
 </div>

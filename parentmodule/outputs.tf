@@ -26,3 +26,8 @@ output "key_vault_secret_reference" {
   value       = data.azurerm_key_vault_secret.vm_password.id
   sensitive   = true
 }
+
+output "management_group_hierarchy" {
+  description = "CAF Management Group Resource IDs (when deployed)"
+  value       = var.deploy_management_groups ? module.azurerm_management_group_hierarchy[0].management_group_ids : null
+}
