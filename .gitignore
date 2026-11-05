@@ -1,7 +1,38 @@
-﻿.terraform/
+# Local .terraform directories
+.terraform/
+
+# .tfstate files
 *.tfstate
 *.tfstate.*
+
+# Crash log files
 crash.log
+
+# Exclude all .tfvars files with sensitive credentials
+*.tfvars
+!example.tfvars
+!*.example.tfvars
+
+# Ignore tfplan files
 *.tfplan
 tfplan
+
+# CLI configuration files
+.terraformrc
+terraform.rc
+
+# Terraform lock file
 .terraform.lock.hcl
+
+# Security scan reports & test artifacts
+*-report.json
+*-report.xml
+gitleaks-report.json
+checkov-report.*
+trivy-report.*
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
